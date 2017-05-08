@@ -99,16 +99,24 @@ module.exports.create = ( spec ) => {
             "Key": _key
         };
         return Promise.all([
-                docClient.getItem( getObject ).promise(),
-                Promise.resolve( dbId )
+            docClient.getItem( getObject ).promise(),
+            Promise.resolve( dbId )
         ]);
     })
     .then( (o) => {
-        var record = o[0],  // var - will be modified in place
-            dbId = o[1];  
+        var record = o[0].Item,  // var - will be modified in place
+            dbId = o[1];
         // patch record - will modify record in place
         jsonpatch.apply( record, patchInstructions );
-        // Have to insert primay key into record returned by getItem
+        return Promise.all([
+            recMgr.build(record),
+            Promise.resolve( dbId )
+        ]); 
+    })
+    .then( (o) => {
+        var record = o[0],  // var - will be modified in place
+            dbId = o[1];
+        // Have to insert primary key into record returned by getItem
         record[primaryKey] = dbId;
         var patchObject = {
             "TableName": model.name,
