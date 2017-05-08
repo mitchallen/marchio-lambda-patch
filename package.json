@@ -1,6 +1,6 @@
 {
   "name": "marchio-lambda-patch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "REST PATCH to DynamoDB via Lambda",
   "main": "modules/index.js",
   "scripts": {
