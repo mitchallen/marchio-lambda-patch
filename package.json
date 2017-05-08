@@ -1,7 +1,7 @@
 {
   "name": "marchio-lambda-patch",
   "version": "0.1.0",
-  "description": "",
+  "description": "REST PATCH to DynamoDB via Lambda",
   "main": "modules/index.js",
   "scripts": {
     "//": "To use: npm start (useful if not a module)",
