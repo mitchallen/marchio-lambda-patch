@@ -32,36 +32,12 @@ var patchFactory = require('./db-patch');
  * @param {Object} spec.context Lambda context
  * @param {function} spec.callback Lambda callback
  * @param {Object} spec.model - Table model
- * @param {function} [spec.filter] - A function that takes the original record and returns a {Promise} that resolves to a filtered record
  * @returns {Promise} that resolves to {module:marchio-lambda-patch}
  * @example <caption>Usage example</caption>
  * // Lambda root file
  * "use strict";
  * 
  * var mlFactory = require('marcio-lambda-patch'); 
- *
- * var getRandomInt = function (min, max) {
- *     return Math.floor(Math.random() * (max - min + 1) + min);
- * };
- * 
- * // Why not just demo hashing with bcrypt?
- * // Because bcrypt requires installing on AWS Linux before packaging
- * // That's beyond the scope of this example, so we fake it.
- *  
- * function fakeHash( record ) {
- *    // Not a real hash function - do not use in production
- *    return new Promise( (resolve, reject) => {
- *         if(!record) {
- *             return reject('record not defined');
- *         }
- *         if(!record.password) {
- *             return reject('record.password not defined');
- *         }
- *         // fake hashing - do not use in production
- *         record.password = '$' + getRandomInt(10000, 10000000);
- *         resolve(record);
- *    });
- * }
  * 
  * exports.handler = function(event, context, callback) {
  * 
@@ -80,8 +56,7 @@ var patchFactory = require('./db-patch');
  *         event: event, 
  *         context: context,
  *         callback: callback,
- *         model: model,
- *         filter: fakeHash
+ *         model: model
  *     })
  *     .catch(function(err) {
  *         callback(err);

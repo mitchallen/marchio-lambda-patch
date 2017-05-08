@@ -100,23 +100,18 @@ module.exports.create = ( spec ) => {
         };
         return Promise.all([
                 docClient.getItem( getObject ).promise(),
-                Promise.resolve( dbId ),
-                Promise.resolve( _key )
+                Promise.resolve( dbId )
         ]);
     })
     .then( (o) => {
         var record = o[0],  // var - will be modified in place
-            dbId = o[1],
-            _key = o[2];  
+            dbId = o[1];  
         // patch record - will modify record in place
         jsonpatch.apply( record, patchInstructions );
-
-        // FIX:
+        // Have to insert primay key into record returned by getItem
         record[primaryKey] = dbId;
-
         var patchObject = {
             "TableName": model.name,
-            // "Key": _key,
             "ConditionExpression": `attribute_exists(${primaryKey})`,
             "Item": record
         };
