@@ -140,7 +140,7 @@ To test:
 ```
 $ curl -i -X PATCH -H "Content-Type: application/json" \
    -d '[{"op":"replace","path":"/status","value":"PATCH"}]' \
-   $AWS_HOST_MARCHIO_PATCH/test/marchio-put/mldb/110ec58a-a0f2-4ac4-8393-c866d813b8d1
+   $AWS_HOST_MARCHIO_PATCH/test/marchio-patch/mldb/ac7e281f-33f9-4872-9c06-5703999e2d42
 ```
 * The response should contain a 204 status code.
 * Browse the DynamoDB table to see the updated record.
