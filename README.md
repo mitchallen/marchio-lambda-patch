@@ -138,7 +138,7 @@ To test:
 * Test the deployment using __curl__:
 
 ```
-$ curl -i -X PUT -H "Content-Type: application/json" \
+$ curl -i -X PATCH -H "Content-Type: application/json" \
    -d '[{"op":"replace","path":"/status","value":"PATCH"}]' \
    $AWS_HOST_MARCHIO_PATCH/test/marchio-put/mldb/110ec58a-a0f2-4ac4-8393-c866d813b8d1
 ```
