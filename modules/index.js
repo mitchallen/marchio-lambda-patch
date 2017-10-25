@@ -43,8 +43,11 @@ var patchFactory = require('./db-patch');
  * 
  *     var model = {
  *         name: 'mldb',   // must match DynamoDB table name
- *         primary: 'eid', // primary key - cannot be reserved word (like uuid)
+ *         partition: 'eid', // primary partition key - cannot be reserved word (like uuid)
+ *         // sort: 'gid',
  *         fields: {
+ *             eid:      { type: String },
+               // gid:      { type: String },
  *             email:    { type: String, required: true },
  *             status:   { type: String, required: true, default: "NEW" },
  *             // Password will be (fake) hashed by filter before being saved
@@ -87,7 +90,7 @@ module.exports.create = (spec) => {
         return Promise.reject("model parameter not set");
     }
 
-    spec.regex = `/${spec.context.functionName}/:model/:id`;
+    spec.regex = `/${spec.context.functionName}/:model/:partition/:sort?`;
 
     const marchio = spec;
 

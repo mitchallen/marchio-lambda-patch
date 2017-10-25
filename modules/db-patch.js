@@ -11,8 +11,7 @@
 const doc = require('dynamodb-doc'),
     docClient = doc ? new doc.DynamoDB() : null,
     crFactory = require('marchio-core-record'),
-    jsonpatch = require('fast-json-patch'),
-    path = '/:model/:id?';
+    jsonpatch = require('fast-json-patch');
 
 function defaultFilter( record ) {
     return new Promise( (resolve, reject) => {
@@ -40,7 +39,8 @@ module.exports.create = ( spec ) => {
           res = adapter.response,
           env = adapter.env;
 
-    const primaryKey = model.primary,
+    const partition = model.partition || null,
+          sort = model.sort || null,
           jsonp = query.jsonp || false,
           cb = query.cb || 'callback';
 
@@ -74,11 +74,6 @@ module.exports.create = ( spec ) => {
         return;
     }
 
-    // TODO - check primaryKey against DynamoDB reserved words
-    if(!primaryKey) {
-        throw new Error('dp-patch: model.primary not defined.');
-    }
-
     const patchInstructions = req.body;
 
     if(!patchInstructions) {
@@ -87,13 +82,27 @@ module.exports.create = ( spec ) => {
 
     return crFactory.create( { model: model } )
     .then( o => {
+        if(model.primary) {
+            throw new Error( "ERROR: marchio-lambda-patch: model.primary should now be model.partition" );
+        }
+        if(!partition) {
+            throw new Error( "ERROR: marchio-lambda-patch: model.partition not defined" );
+        }
+
         recMgr = o; 
-        const dbId = params.id;
+
+        const dbId = params.partition;
         if(!dbId) {
             return Promise.reject(404);
         } 
+        
         var _key = {};
-        _key[ primaryKey ] = dbId;
+        _key[ partition ] = dbId;
+
+        if( sort && params.sort ) {
+            _key[sort] = params.sort;
+        }
+
         var getObject = {
             "TableName": model.name,
             "Key": _key
@@ -116,11 +125,11 @@ module.exports.create = ( spec ) => {
     .then( (o) => {
         var record = o[0],  // var - will be modified in place
             dbId = o[1];
-        // Have to insert primary key into record returned by getItem
-        record[primaryKey] = dbId;
+        // Have to insert primary partition key into record returned by getItem
+        record[partition] = dbId;
         var patchObject = {
             "TableName": model.name,
-            "ConditionExpression": `attribute_exists(${primaryKey})`,
+            "ConditionExpression": `attribute_exists(${partition})`,
             "Item": record
         };
         return Promise.all([
@@ -145,11 +154,24 @@ module.exports.create = ( spec ) => {
         if(err) {
             if( err === 404 ) {
                 res.json({
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-marchio-table": model.name,
+                        "x-marchio-partition": params.partition,
+                        "x-marchio-sort": params.sort
+                    },
                     statusCode: 404
                 });
             } else {
                 res.json({
                     statusCode: 500,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-marchio-error": err.message,
+                        "x-marchio-table": model.name,
+                        "x-marchio-partition": params.partition,
+                        "x-marchio-sort": params.sort
+                    },
                     body: { 
                         message: err.message, 
                         err: err

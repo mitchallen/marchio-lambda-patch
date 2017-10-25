@@ -15,12 +15,11 @@ exports.handler = function(event, context, callback) {
 
     var model = {
         name: 'mldb',   // must match DynamoDB table name
-        primary: 'eid',     // primary key - cannot be reserved word (like uuid)
+        partition: 'eid',     // primary partition key - cannot be reserved word (like uuid)
         fields: {
             eid:      { type: String },
             email:    { type: String, required: true },
             status:   { type: String, required: true, default: "NEW" },
-            // In a real world example, password would be hashed by middleware before being saved
             password: { type: String, select: false }  // select: false, exclude from query results
         }
     };

@@ -14,10 +14,12 @@ const mlFactory = require('marchio-lambda-patch');
 exports.handler = function(event, context, callback) {
 
     var model = {
-        name: 'mldb',   // must match DynamoDB table name
+        name: 'mldb-sort',   // must match DynamoDB table name
         partition: 'eid',     // primary partition key - cannot be reserved word (like uuid)
+        sort: 'gid',
         fields: {
             eid:      { type: String },
+            gid:      { type: String },
             email:    { type: String, required: true },
             status:   { type: String, required: true, default: "NEW" },
             password: { type: String, select: false }  // select: false, exclude from query results

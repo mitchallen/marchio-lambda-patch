@@ -1,0 +1,18 @@
+{
+  "name": "deploy-101",
+  "version": "1.0.0",
+  "description": "Example Lambda deployment",
+  "main": "lambda.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "put1": "curl -i -X PUT -H \"Content-Type: application/json\" -d '{\"email\":\"patch1@test.com\",\"password\":\"$4xz61\",\"status\":\"TEST1\"}' $AWS_HOST_MARCHIO_PUT_SORT/test/marchio-put-sort/mldb-sort/34567/abc1",
+    "put2": "curl -i -X PUT -H \"Content-Type: application/json\" -d '{\"email\":\"patch2@test.com\",\"password\":\"$4xz62\",\"status\":\"TEST2\"}' $AWS_HOST_MARCHIO_PUT_SORT/test/marchio-put-sort/mldb-sort/34567/abc2",
+    "patch1": "curl -i -X PATCH -H \"Content-Type: application/json\" -d '[{\"op\":\"replace\",\"path\":\"/status\",\"value\":\"PATCH\"}]' $AWS_HOST_MARCHIO_PATCH_SORT/test/marchio-patch-sort/mldb-sort/34567/abc1",
+    "demo": "npm run put1 && npm run put2 && npm run patch1"
+  },
+  "author": "Mitch Allen",
+  "license": "MIT",
+  "dependencies": {
+    "marchio-lambda-patch": "file:marchio-kit.tgz"
+  }
+}

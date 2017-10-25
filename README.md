@@ -196,8 +196,11 @@ exports.handler = function(event, context, callback) {
 
     var model = {
         name: 'mldb',   // must match DynamoDB table name
-        primary: 'eid', // primary key - cannot be reserved word (like uuid)
+        partition: 'eid', // primary partition key - cannot be reserved word (like uuid)
+        // sort: 'gid',
         fields: {
+            eid:      { type: String },
+               // gid:      { type: String },
             email:    { type: String, required: true },
             status:   { type: String, required: true, default: "NEW" },
             // Password will be (fake) hashed by filter before being saved
@@ -216,6 +219,7 @@ exports.handler = function(event, context, callback) {
     });
  };
 ```
+
 
 * * *
 
@@ -242,6 +246,11 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.2.0
+
+* model.primary is now model.partition
+* now supports databases with a sort key
 
 #### Version 0.1.1 
 

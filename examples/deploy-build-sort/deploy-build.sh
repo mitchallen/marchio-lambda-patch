@@ -3,10 +3,10 @@
 # chmod +x (this script)
 
 KIT_FOLDER=temp-kit
-FUNC=marchio-patch
+FUNC=marchio-patch-sort
 REGION=us-east-1
 ZIP_FILE=pkg-lambda.zip
-DEMO_FOLDER=examples/deploy-build/
+DEMO_FOLDER=examples/deploy-build-sort/
 
 cd ../..
 npm pack
