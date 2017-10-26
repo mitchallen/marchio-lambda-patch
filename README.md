@@ -247,6 +247,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Version History
 
+#### Version 0.3.1
+
+* updated deploy example with latest build
+
 #### Version 0.3.0
 
 * removed model/table name from url
