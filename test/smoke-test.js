@@ -61,7 +61,7 @@ describe('deployment smoke test', () => {
             var _testModel = {
                 // name: 'beta',
                 name: table,
-                key: "eid", // Primary key field in DynamoDB
+                partition: "eid", // Primary key field in DynamoDB
                 fields: {
                     email:    { type: String, required: true },
                     status:   { type: String, required: true, default: "NEW" },
@@ -70,7 +70,7 @@ describe('deployment smoke test', () => {
                 }
             };
 
-            var _postUrl = `${_testPostPath}/${_testModel.name}`;
+            var _postUrl = `${_testPostPath}`;
             // console.log(`POST URL: ${_postUrl}`);
 
             it('patch should succeed', done => {
@@ -94,11 +94,11 @@ describe('deployment smoke test', () => {
                         // Should not return password
                         should.not.exist(res.body.password);
                         res.body.status.should.eql("NEW");
-                        should.exist(res.body[_testModel.key]);
-                        res.header.location.should.eql(`/${_testModel.name}/${res.body[_testModel.key]}`)
+                        should.exist(res.body[_testModel.partition]);
+                        res.header.location.should.eql(`/${_testModel.name}/${res.body[_testModel.partition]}`)
                         should.exist(res.body.eid);
                         var _saveKey = res.body.eid;
-                        var _patchUrl = `${_testPatchPath}/${_testModel.name}/${_saveKey}`;
+                        var _patchUrl = `${_testPatchPath}/${_saveKey}`;
                         // console.log("PUT URL: ", _getUrl );
                         request(_testPatchHost)
                             .patch(_patchUrl)
@@ -107,7 +107,7 @@ describe('deployment smoke test', () => {
                             .expect('Location', `/${_testModel.name}/${res.body.eid}` )
                             .end(function (err, res) {
                                 should.not.exist(err);
-                                var _getUrl = `${_testGetPath}/${_testModel.name}/${_saveKey}`;
+                                var _getUrl = `${_testGetPath}/${_saveKey}`;
                                 request(_testGetHost)
                                     .get(_getUrl)
                                     .expect(200)
@@ -146,11 +146,11 @@ describe('deployment smoke test', () => {
                         // Should not return password
                         should.not.exist(res.body.password);
                         res.body.status.should.eql("NEW");
-                        should.exist(res.body[_testModel.key]);
-                        res.header.location.should.eql(`/${_testModel.name}/${res.body[_testModel.key]}`)
+                        should.exist(res.body[_testModel.partition]);
+                        res.header.location.should.eql(`/${_testModel.name}/${res.body[_testModel.partition]}`)
                         should.exist(res.body.eid);
                         var _saveKey = res.body.eid;
-                        var _patchUrl = `${_testPatchPath}/${_testModel.name}/${_saveKey}`;
+                        var _patchUrl = `${_testPatchPath}/${_saveKey}`;
                         request(_testPatchHost)
                             .patch(_patchUrl)
                             .send(testPatchInstructions)
@@ -158,7 +158,7 @@ describe('deployment smoke test', () => {
                             .expect('Location', `/${_testModel.name}/${res.body.eid}` )
                             .end(function (err, res) {
                                 should.not.exist(err);
-                                var _getUrl = `${_testGetPath}/${_testModel.name}/${_saveKey}`;
+                                var _getUrl = `${_testGetPath}/${_saveKey}`;
                                 request(_testGetHost)
                                     .get(_getUrl)
                                     .expect(200)
@@ -179,7 +179,7 @@ describe('deployment smoke test', () => {
             });
 
             it('patch with invalid model id in url should return 404', done => {
-                var _invalidPatchUrl = `${_testPatchPath}/${_testModel.name}/bogus`;
+                var _invalidPatchUrl = `${_testPatchPath}/bogus`;
                 request(_testPatchHost)
                     .put(_invalidPatchUrl)
                     .set('Content-Type', 'application/json')
